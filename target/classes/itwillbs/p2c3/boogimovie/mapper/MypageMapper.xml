@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="itwillbs.p2c3.boogimovie.mapper.MypageMapper">
+  
+  	<!-- 메인페이지 id -->
+    <select id="selectMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+        SELECT * FROM member WHERE member_id = #{id}
+    </select>
+    
+	<!-- My극장 극장 전체리스트 -->
+    <select id="selectTheater" resultType="itwillbs.p2c3.boogimovie.vo.TheaterVO">
+    	SELECT theater_num, theater_name
+    	FROM theater
+    </select>
+    
+    <!-- My극장 자주가는 영화관 -->
+    <select id="selectMyTheater" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+    	SELECT member_my_theater1, member_my_theater2, member_my_theater3
+    	FROM member
+		WHERE member_id = #{member_id};
+    </select>
+    
+    <!-- 예매내역 -->
+	<select id="selectMovieReservation" resultType="map">
+	    SELECT
+	    	pay.ticket_pay_num,
+		    movie.movie_poster,
+		    movie.movie_name,
+		    screen_session.scs_date,
+		    pay.ticket_pay_price,
+		   	CONCAT(screen_session.scs_start_time, ' ~ ', screen_session.scs_end_time) AS session_time,
+		   	CONCAT(theater.theater_name, ' ', screen_info.screen_cinema_num, '관') AS theater_info,
+	   	    GROUP_CONCAT(ticket.ticket_seat_info ORDER BY ticket.ticket_seat_info SEPARATOR ', ') AS ticket_seat_info
+	        
+		    
+		FROM
+		    pay
+		JOIN member ON member.member_id = pay.member_id 
+		JOIN screen_session ON screen_session.scs_num = pay.scs_num
+		JOIN movie ON movie.movie_num = screen_session.movie_num 
+		JOIN ticket ON ticket.ticket_pay_num = pay.ticket_pay_num
+		JOIN screen_info ON screen_info.screen_num = screen_session.screen_num
+		JOIN theater ON theater.theater_num = screen_info.theater_num
+    WHERE
+        member.member_id = #{member_id}
+    <choose>
+        <when test="status == '결제' and startRow == null and listLimit == null">
+            AND pay.ticket_pay_status = '결제'
+            GROUP BY
+                ticket.ticket_pay_num, movie.movie_poster, movie.movie_name, screen_session.scs_date, 
+                screen_session.scs_start_time, screen_session.scs_end_time, theater.theater_name, screen_info.screen_cinema_num
+            ORDER BY
+                screen_session.scs_date ASC, screen_session.scs_start_time ASC, screen_session.scs_num ASC
+        </when>
+        <when test="status == '취소'">
+            AND pay.ticket_pay_status = '취소'
+            GROUP BY
+                ticket.ticket_pay_num, movie.movie_poster, movie.movie_name, screen_session.scs_date, 
+                screen_session.scs_start_time, screen_session.scs_end_time, theater.theater_name, screen_info.screen_cinema_num
+            ORDER BY
+                screen_session.scs_date ASC, screen_session.scs_start_time ASC, screen_session.scs_num ASC
+            LIMIT #{startRow}, #{listLimit}
+        </when>
+        <otherwise>
+            AND pay.ticket_pay_status = '결제'
+            GROUP BY
+                ticket.ticket_pay_num, movie.movie_poster, movie.movie_name, screen_session.scs_date, 
+                screen_session.scs_start_time, screen_session.scs_end_time, theater.theater_name, screen_info.screen_cinema_num
+            ORDER BY
+                screen_session.scs_date ASC, screen_session.scs_start_time ASC, screen_session.scs_num ASC
+            LIMIT #{startRow}, #{listLimit}
+        </otherwise>
+    </choose>
+</select>
+    
+    <!-- 예매한 영화 갯수 -->
+    <select id="selectResvCount" resultType="int">
+	   	SELECT COUNT(DISTINCT pay.ticket_pay_num)
+		FROM
+		    pay
+		JOIN member ON member.member_id = pay.member_id 
+		JOIN screen_session ON screen_session.scs_num = pay.scs_num
+		JOIN movie ON movie.movie_num = screen_session.movie_num 
+		JOIN ticket ON ticket.ticket_pay_num = pay.ticket_pay_num
+		JOIN screen_info ON screen_info.screen_num = screen_session.screen_num
+		JOIN theater ON theater.theater_num = screen_info.theater_num
+       	WHERE
+        member.member_id = #{member_id}
+        <if test="status.equals('결제')">
+            AND pay.ticket_pay_status = '결제'
+        </if>
+        <if test="status.equals('취소')">
+            AND pay.ticket_pay_status = '취소'
+        </if>
+    </select>
+    
+    
+    <select id="selectStorePay" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+ 	    SELECT 
+		    store_pay_cancel_date,
+		    store_pay_date,
+		    store_pay_price,
+		    store_pay_type,
+		    store_pay_status,
+		    store_pay_num
+    	FROM 
+    		store_pay
+   		WHERE 
+    		member_id = #{member_id} 
+    </select>
+    
+    <select id="selectStorePayCount" resultType="int">
+    	SELECT COUNT(store_pay_num)
+    	FROM store_pay
+    	WHERE member_id = #{member_id}
+    </select>
+    
+    <!-- 회원정보 -->
+    <select id="selectDbMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+    	SELECT * FROM member WHERE member_id = #{member_id}
+    </select>
+    
+    <!-- 정보수정 -->
+    <!-- 이름, 아이디, 비번, 생년월일, 주소, 이메일, 폰번, 취향 -->
+    <update id="updateMember">
+ 		UPDATE member
+		SET
+			<!-- 새 패스워드(passwd) 입력 여부에 따라 패스워드 변경 여부 결정 -->
+		<if test="member_pwd != null and !member_pwd.equals('')">
+			member_pwd = #{member_pwd},
+		</if>
+			member_birth = #{member_birth}
+			, member_addr = #{member_addr}
+			, member_email = #{member_email}
+			, member_tel = #{member_tel}
+			, member_movie_genre = #{member_movie_genre}
+		WHERE
+			member_id = #{member_id}
+    
+    </update>
+
+	<update id="updateMyTheater">
+	    UPDATE member
+	    <set> <!-- 자동으로 쉼표 처리. 각 항목 뒤에 쉼표를 추가하고 조건이 충족되지 않으면 마지막 쉼표를 제거함  -->
+   			<if test="checkedValues[0] != null and !checkedValues[0].equals('')">
+		    	member_my_theater1 = #{checkedValues[0]},
+		     </if>
+		    <if test="checkedValues[0] == null">
+		    	member_my_theater1 = null,
+		    </if>
+   			<if test="checkedValues[1] != null and !checkedValues[1].equals('')">
+		        member_my_theater2 = #{checkedValues[1]},
+			</if>
+			<if test="checkedValues[1] == null">
+		  		member_my_theater2 = null,
+			</if>
+   			<if test="checkedValues[2] != null and !checkedValues[2].equals('')">
+		        member_my_theater3 = #{checkedValues[2]}
+			</if>
+			<if test="checkedValues[2] == null">
+			    member_my_theater3 = null
+			</if>
+			</set>
+	    WHERE member_id = #{member_id}
+	</update>
+
+    <!-- 탈퇴처리 -->
+   	<!-- member 테이블의 member_status 컬럼값을 3(탈퇴)로 변경 탈퇴일자(withdraw_date) 를 now() 함수 -->
+    <update id="updateMemberForWithdraw">
+   		UPDATE member
+		SET member_status = '탈퇴',
+			member_withdraw_date = now()
+		WHERE
+			member_id = #{member_id}
+    </update>
+    
+    <!-- 예매취소 pay 테이블 업데이트 -->
+	<update id="updatePayStatus">
+	    UPDATE pay
+	    SET ticket_pay_status = '취소', 
+	    	ticket_pay_cancel_date = now(), 
+	    	use_point = 0, 
+	    	save_point = null,
+           	coupon_num = null
+		WHERE member_id = #{member_id} AND ticket_pay_num = #{ticket_pay_num}
+	</update>
+	<update id="updateStorePayStatus">
+		UPDATE store_pay
+		SET store_pay_status = '취소',
+			store_pay_cancel_date = now(),
+			use_point = 0,
+			save_point = null,
+			coupon_num = null
+		WHERE member_id = #{member_id}
+		AND  store_pay_num = #{store_pay_num}
+	</update>
+	<select id="selectCouponNum" resultType="Integer">
+			SELECT coupon_num
+			FROM pay
+			WHERE ticket_pay_num = #{ticket_pay_num}
+	</select>
+	
+    <!-- 예매취소 coupon 테이블 업데이트 -->
+	<update id="updateCouponStatus">
+	    UPDATE coupon
+	    SET coupon_status = 1
+	    WHERE member_id = #{member_id} AND coupon_num = #{coupon_num}
+	</update>
+	
+	<select id="selectMemberPoint" resultType="itwillbs.p2c3.boogimovie.vo.PayVO">
+		SELECT use_point, save_point
+		FROM pay
+		WHERE ticket_pay_num = #{ticket_pay_num}
+		AND member_id = #{member_id}
+	</select>
+	
+	<select id="selectStorePayPoint" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+		SELECT use_point, save_point
+		FROM store_pay
+		WHERE store_pay_num = #{store_pay_num}
+		AND member_id = #{member_id}
+	</select>
+	<!-- 예매취소 member 테이블 업데이트 -->
+	<update id="updateMemberPoint">
+	    UPDATE member
+	    JOIN pay ON pay.member_id = member.member_id
+	    JOIN ticket ON ticket.ticket_pay_num = pay.ticket_pay_num
+	    SET member_point = member_point + #{use_point} - #{save_point}
+	    WHERE member.member_id = #{member_id} 
+	    AND pay.ticket_pay_num = #{ticket_pay_num}
+	</update>
+	
+	<update id="updateMemberPointStore">
+		UPDATE member
+	    SET member_point = member_point + #{use_point} - #{save_point}
+	    WHERE member.member_id = #{member_id} 
+	</update>
+</mapper>

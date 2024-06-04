@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="itwillbs.p2c3.boogimovie.mapper.FaqMapper">
+  	<insert id="insertFaq">
+  		INSERT INTO faq (
+  						 faq_num,
+  						 faq_subject,
+  						 faq_content,
+  						 faq_category,
+  						 faq_read_count
+  		)
+  		VALUES (
+  				null,
+  				#{faq_subject},
+  				#{faq_content},
+  				#{faq_category},
+  				0
+  		)
+  	</insert>
+  	<select id="selectFaqList" resultType="itwillbs.p2c3.boogimovie.vo.FAQVO">
+  		SELECT faq_num,
+  			   faq_subject,
+  			   faq_content,
+  			   faq_category,
+  			   faq_read_count
+  		FROM faq
+  		<if test="faqCategory != null and faqCategory != ''">
+	  		WHERE faq_category = #{faqCategory}
+  		</if>
+  		ORDER BY faq_num DESC
+  		<if test="startRow != null and listLimit != null">
+	  		LIMIT #{startRow}, #{listLimit}
+  		</if>
+  	</select>
+  	
+  	<select id="selectFaq" resultType="itwillbs.p2c3.boogimovie.vo.FAQVO">
+  		SELECT faq_num,
+  			   faq_subject,
+  			   faq_content,
+  			   faq_category
+  		FROM faq
+  		WHERE faq_num = #{faq_num}
+  	</select>
+  	
+  	<!-- viewCOunt가 가장 높은 다섯개 -->
+  	<select id="selectFaqViewCountList" resultType="itwillbs.p2c3.boogimovie.vo.FAQVO">
+  		SELECT faq_subject, faq_category, faq_read_count
+		FROM faq
+		ORDER BY faq_read_count DESC
+		LIMIT 5;
+  	</select>
+  	
+  	<delete id="deleteFaq">
+  		DELETE FROM faq
+  		WHERE faq_num = #{faq_num}
+  	</delete>
+  	<update id="updateFaq">
+	  	UPDATE faq
+	  	SET faq_subject = #{faq_subject},
+	  		faq_content = #{faq_content},
+	  		faq_category = #{faq_category}
+	  	WHERE faq_num = #{faq_num}
+  	</update>
+  	
+  	<!-- 카테고리 또는 ""값에 따른 카운트 sql -->
+  	<select id="selectFaqListCount" resultType="int">
+  		SELECT COUNT(faq_num)
+  		FROM faq
+  		<if test="!faqCategory != '' and faqCategory != null">
+	  		WHERE faq_category = #{faqCategory}
+  		</if>
+  	</select>
+  	<select id="selectFaqListCountCag" resultType="int">
+  		SELECT COUNT(faq_num)
+  		FROM faq
+  		WHERE faq_category = #{faq_category}
+  	</select>
+  	
+  	<!-- faq 게시물 클릭시 조회수 증가 -->
+  	<update id="updateViewCount">
+  		UPDATE faq
+  		SET faq_read_count = faq_read_count + 1
+  		WHERE faq_num = #{faq_num}
+  	</update>
+  	
+  	<select id="selectFaqKeywordList" resultType="itwillbs.p2c3.boogimovie.vo.FAQVO">
+  		SELECT faq_num,
+  			   faq_subject,
+  			   faq_content,
+  			   faq_category,
+  			   faq_read_count
+  		FROM faq
+  		WHERE
+  		<if test="faqSearchKeyword != null and faqSearchKeyword != ''">
+  			faq_subject LIKE CONCAT('%', #{faqSearchKeyword}, '%') 
+			OR faq_content LIKE CONCAT('%', #{faqSearchKeyword}, '%')
+			OR faq_category LIKE CONCAT('%', #{faqSearchKeyword}, '%')
+  		</if>
+  		ORDER BY faq_num DESC
+  		<if test="startRow != null and listLimit != null">
+	  		LIMIT #{startRow}, #{listLimit}
+  		</if> 
+  	</select>
+  </mapper>

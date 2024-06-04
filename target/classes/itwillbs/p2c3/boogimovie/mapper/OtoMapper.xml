@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.OtoMapper">
+	<!-- 1대1 문의 DB 저장 -->
+	<insert id="insertOto">
+		INSERT INTO oto(oto_num,
+						oto_subject,
+						oto_content,
+						oto_date,
+						oto_category,
+						oto_reply_status,
+						theater_num,
+						member_id,
+						oto_file1,
+						oto_file2
+						)
+		VALUES (null,
+				#{oto.oto_subject},
+				#{oto.oto_content},
+				now(),
+				#{oto.oto_category},
+				'미답',
+				#{theater_num},
+				#{id},
+				#{oto.oto_file1},
+				#{oto.oto_file2}
+				)
+	</insert>
+	
+	<!-- otoList 가져오기 -->
+	<select id="selectOtoList" resultType="itwillbs.p2c3.boogimovie.vo.OTOVO">
+		SELECT o.oto_num,
+			   o.oto_subject,
+			   o.oto_content,
+			   o.oto_date,
+			   o.oto_category,
+			   o.oto_reply_status,
+			   o.theater_num,
+			   o.member_id,
+			   t.theater_name
+		 FROM oto o
+		 JOIN theater t
+   		on o.theater_num = t.theater_num
+   		<if test="faqCategory != null and faqCategory != ''">
+   			WHERE oto_category = #{faqCategory}
+   		</if>
+   		<if test="theaterName != null and theaterName != ''">
+   			WHERE theater_name = #{theaterName}
+   		</if>
+   		<if test="id != null and id != ''">
+	   		WHERE o.member_id = #{id}
+   		</if>
+		ORDER BY oto_num DESC
+		LIMIT #{startRow}, #{listLimit}
+	</select>
+	<!-- 1대1 문의 데이터 하나 갖고 오기 -->
+	<select id="selectOto" resultType="itwillbs.p2c3.boogimovie.vo.OTOVO">
+		SELECT o.oto_num,
+			   o.oto_subject,
+			   o.oto_content,
+			   o.oto_date,
+			   o.oto_category,
+			   o.oto_reply_status,
+			   o.theater_num,
+			   o.member_id,
+			   t.theater_name,
+			   o.oto_file1,
+			   o.oto_file2
+		 FROM oto o
+		 JOIN theater t
+   		on o.theater_num = t.theater_num
+   		WHERE oto_num = #{oto_num}
+	</select>
+	<!-- 극장 번호 갖고 오기 -->
+	<select id="selectTheaterNum" resultType="int">
+		SELECT theater_num 
+		FROM theater
+		WHERE theater_name = #{theater_name}
+	</select>
+	<delete id="deleteOto">
+		DELETE FROM oto
+		WHERE oto_num = #{oto_num}
+	</delete>
+	<!-- 답변후 '미답' -> '답변' 변경-->
+	<update id="updateResponse">
+		UPDATE oto
+		SET oto_reply_status = '답변'
+		WHERE oto_num = #{oto_num}
+	</update>
+	
+	<!-- 1대1 문의 게시물 갯수 -->
+	<select id="getOtoListCount" resultType="int">
+		SELECT COUNT(oto_num)
+		FROM oto o
+		JOIN theater t
+   		on o.theater_num = t.theater_num
+   		<if test="id != null and id != ''">
+	   		WHERE o.member_id = #{id}
+   		</if>
+		<if test="faqCategory != null and faqCategory != ''">
+   			AND oto_category = #{faqCategory}
+   		</if>
+   		<if test="theaterName != null and theaterName != ''">
+   			AND theater_name = #{theaterName}
+   		</if>
+	</select>
+	
+	<!-- 1대1문의 파일 삭제 -->
+	<update id="deleteOtoFile">
+		UPDATE oto
+		SET
+			oto_file1 = CASE WHEN oto_file1 = #{oto_file1} THEN '' ELSE oto_file1 END,
+			oto_file2 = CASE WHEN oto_file2 = #{oto_file1} THEN '' ELSE oto_file2 END
+		WHERE oto_num = #{oto_num}
+	</update>
+<!-- 	1대1 문의 수정 -->
+	<update id="updateOto">
+		UPDATE oto
+		SET
+			oto_content = #{oto_content}
+			<if test="oto_file1 != null and oto_file1 != ''">
+				, oto_file1 = #{oto_file1}
+			</if>
+			<if test="oto_file2 != null and oto_file2 != ''">
+				, oto_file2 = #{oto_file2}
+			</if>
+		WHERE oto_num = #{oto_num}
+	</update>
+	
+	<!-- reply가져오기 -->
+	<select id="selectOtoReply">
+		SELECT 
+			oto_reply_content,
+			oto_reply_date
+		FROM oto_reply
+		WHERE oto_num = #{oto_num}
+	</select>
+	<update id="updateOtoContent">
+		UPDATE oto_reply
+		SET oto_reply_content = #{oto_reply_content}
+		WHERE oto_num = #{oto_num}
+	</update>
+	
+	
+	
+</mapper>

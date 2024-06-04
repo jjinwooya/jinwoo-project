@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.TicketingMapper">
+	<select id="fianlListSelect" resultType="itwillbs.p2c3.boogimovie.vo.ScreenSessionVO">
+	    SELECT *
+	    FROM reserve_view
+	    WHERE movie_num = #{movie_num}
+	    AND theater_num = #{theater_num}
+	    AND scs_date = #{scs_date}
+	    AND scs_empty_seat > 0
+	    <if test="scs_date == current_date">
+	        AND STR_TO_DATE(scs_start_time, '%H:%i') > CURRENT_TIME()
+	    </if>
+	</select>
+	
+	<select id="chooseSeatSelect" resultType="itwillbs.p2c3.boogimovie.vo.ScreenSessionVO">
+		SELECT *
+		FROM reserve_view
+		WHERE movie_num = #{movie_num}
+		AND theater_num = #{theater_num}
+		AND scs_date = #{scs_date}
+		AND scs_start_time = #{scs_start_time} 
+		AND scs_end_time = #{scs_end_time}
+		AND screen_cinema_num = #{screen_cinema_num}
+	</select>
+	
+	<select id="feeCalc" resultType="map" parameterType="map">
+		SELECT *
+		FROM fee
+		WHERE 1=1
+		<if test="fee_day_keyword != null and !fee_day_keyword.equals('')">
+			AND fee_day_keyword = #{fee_day_keyword}
+		</if>
+		<if test="fee_time_keyword != null and !fee_time_keyword.equals('')">
+			AND   fee_time_keyword = #{fee_time_keyword}
+		</if>
+		<if test="fee_dimension_keyword != null and !fee_dimension_keyword.equals('')">
+			AND   fee_dimension_keyword = #{fee_dimension_keyword}
+		</if>
+			AND   fee_age_keyword = 'NP'
+	</select>
+	
+	<select id="feeCalcAge" resultType="itwillbs.p2c3.boogimovie.vo.FeeAgeVO">
+		SELECT *
+		FROM fee_age
+	</select>
+	
+	<select id="selectPayNum" resultType="integer">
+		SELECT ticket_pay_num
+		FROM pay
+		WHERE 
+			1=1
+		AND scs_num = #{scs_num}
+	</select>
+	
+	<select id="selectPayedSeat" resultType="itwillbs.p2c3.boogimovie.vo.TicketVO">
+		SELECT *
+		FROM ticket
+		WHERE ticket_pay_num = #{pay_num} 
+	</select>
+	
+	<insert id="saveTicketInfo">
+		INSERT ticket
+		VALUES(
+			null
+			,#{ticket_seat_info}
+			,#{ticket_price}
+			,#{ticket_keyword}
+			,#{ticket_pay_num}
+		)
+	</insert>
+	
+	<select id="selectTheaterByMovie" resultType="map">
+	    SELECT t.theater_name, count(*) movie_count 
+	    FROM screen_info si 
+	    JOIN theater t ON t.theater_num = si.theater_num 
+	    JOIN screen_session ss ON ss.screen_num = si.screen_num 
+	    WHERE ss.movie_num = #{movie_num}
+	    AND ss.scs_empty_seat > 0
+	    AND (ss.scs_date > CURRENT_DATE OR (ss.scs_date = CURRENT_DATE AND ss.scs_start_time > CURRENT_TIME))
+	    GROUP BY t.theater_name;
+	</select>
+	
+</mapper>

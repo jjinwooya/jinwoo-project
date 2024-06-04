@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.CouponMapper">
+  
+	<select id="selectCoupon" resultType="itwillbs.p2c3.boogimovie.vo.CouponVO">
+	  	SELECT *
+	  	FROM coupon_view
+	  	WHERE member_id = #{member_id} AND coupon_status = 1
+	</select>
+  
+  
+	<select id="selectMemberCoupon" resultType="itwillbs.p2c3.boogimovie.vo.CouponVO">
+		SELECT *,  coupon_name, coupon_value
+		FROM coupon c 
+		JOIN coupon_type ct 
+		ON c.coupon_type_num = ct.coupon_type_num 
+		WHERE member_id = #{member_id} AND coupon_status = 1
+	</select>
+  
+  
+	<update id="useCoupon">
+		UPDATE coupon
+		SET coupon_status = 2
+		WHERE coupon_num = #{coupon_num}
+	</update>
+  
+</mapper>

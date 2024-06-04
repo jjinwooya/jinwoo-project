@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="itwillbs.p2c3.boogimovie.mapper.ReviewMapper">
+ 	<insert id="insertReview" >
+ 	INSERT INTO review (movie_num, member_id, review_rating, review_text, review_num, review_date)
+    SELECT #{movie_num}, #{member_id}, #{review_rating}, #{review_text}, COALESCE(MAX(review_num), 0) + 1 ,NOW()
+    FROM review
+ 	
+ 	</insert>
+ 	
+ 	 <select id="selectReviewList" resultType="itwillbs.p2c3.boogimovie.vo.ReviewVO" >
+     	SELECT * FROM review
+    	WHERE movie_num = #{movie_num}
+    	ORDER BY review_date DESC
+    	LIMIT #{startRow}, #{listLimit}
+    </select>
+ 	
+ 	<select id="selectReviewId" resultType="itwillbs.p2c3.boogimovie.vo.ReviewVO">
+ 		SELECT * FROM review WHERE review_num = #{review_num}
+ 	</select>
+ 	
+ 	<update id="updateReview" >
+ 		UPDATE review
+ 		SET review_rating = #{review_rating},
+ 			review_text = #{review_text},
+ 			review_date = COALESCE(#{review_date}, NOW())
+ 		WHERE review_num = #{review_num}	 
+ 	</update>
+ 	<delete id="deleteReview">
+ 		DELETE FROM review
+ 		WHERE review_num = #{review_num}	 
+ 	</delete>
+ 	<select id="countReviews" resultType="int">
+        SELECT COUNT(*) FROM review
+        WHERE movie_num = #{movie_num}
+    </select>
+ 	
+ 	<select id="selectMemberReview" resultType="itwillbs.p2c3.boogimovie.vo.ReviewVO">
+ 		SELECT * FROM review
+		WHERE member_id =  #{member_id} AND movie_num = #{movie_num}
+ 	 	ORDER BY review_date DESC
+ 	</select>
+ 	
+ 	
+ 	
+ </mapper>

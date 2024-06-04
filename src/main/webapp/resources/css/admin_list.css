@@ -1,0 +1,124 @@
+
+table {
+	border-collapse: collapse;
+	width: 90%;
+	margin: 0rem auto;
+	box-shadow: 4px 4px 10px 0 rgba(0, 0, 0, 0.1);
+	background-color: white;
+	text-align: center;
+}
+
+/* 테이블 행 */
+th, td {
+	padding: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+th {
+	background-color: #1b1b1b;
+	color: #ddd;
+}
+
+/* 테이블 올렸을 때 */
+tbody tr:hover {
+	background-color: #eee;
+	opacity: 0.9;
+	cursor: pointer;
+}
+
+/* 테이블 비율 */
+th:nth-child(1), td:nth-child(1) {
+	width: 7%;
+}
+
+th:nth-child(2), td:nth-child(2) {
+	width: 20%;
+}
+
+th:nth-child(3), td:nth-child(3) {
+	width: 7%;
+}
+
+th:nth-child(4), td:nth-child(4) {
+	width: 10%;
+}
+
+th:nth-child(5), td:nth-child(5) {
+	width: 7%;
+}
+
+th:nth-child(6), td:nth-child(6) {
+	width: 10%;
+}
+th:nth-child(7), td:nth-child(7) {
+	width: 5%;
+}
+
+
+.admin_movie_head {
+	margin: 50px 0;
+	text-align: right;
+}
+
+.admin_movie_body {
+	margin-bottom: 30px;
+	clear: right;
+}
+
+.admin_movie_search {
+	height: 50px;
+	width: 400px;
+	float: right;
+	margin-right: 100px;
+	margin-bottom: 20px;
+}
+
+.admin_movie_search>input[type=text] {
+	font-size: 18px;
+	height: 46px;
+	width: 150px;
+	padding: 5px;
+	outline: none;
+}
+
+.admin_movie_search>select {
+	font-size: 18px;
+	height: 46px;
+	width: 140px;
+	outline: none;
+	padding-left: 10px;
+}
+
+.admin_movie_search > button {
+	width: 90px;
+	height: 46px;
+	background: black;
+	outline: none;
+	color: white;
+	font-weight: bold;
+}
+.admin_movie_footer > button {
+	width: 90px;
+	height: 46px;
+	background: black;
+	outline: none;
+	color: white;
+	font-weight: bold;
+}
+
+.admin_movie_title {
+	float: left;
+	font-size: 30px;
+	margin-left: 100px;
+}
+
+.notice_pageArea {
+	margin-top:20px;
+    text-align: center;
+}
+
+.notice_pageArea nav {
+    display: inline-block;
+}
+
+

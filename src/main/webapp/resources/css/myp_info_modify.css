@@ -1,0 +1,70 @@
+@charset "EUC-KR";
+* {box-sizing: border-box}
+
+.container1{
+	height : auto;
+	width: 1400px; /* 해상도 1200*/
+	margin-top: 20px;
+	margin : auto;
+}
+
+.container2{
+	margin-top: 20px;
+}
+
+.box1{
+	margin-left : 200px;	
+}
+
+.box2{
+	margin-left : 385px;	
+	margin-top : 50px;	
+}
+
+.box3{
+	display: flex; /* 가로로 정렬 */
+}
+.align_center{
+	text-align: center;
+}
+.box4{
+	margin-top : 0px;	
+}
+.box5{margin-top:10px;}
+/* ============= 버튼 ================= */
+
+.content {
+  display: flex; /* 가로로 정렬 */
+  flex-direction: row; /* 수평으로 배치 */
+  margin-top: 2em; /* 위쪽 여백 추가 */
+}
+
+/* ================================== */
+
+* {box-sizing: border-box}
+
+input[type=text], input[type=password]{
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+}
+
+.movTaste{
+  width: 100%;
+  padding: 15px 15px 15px 0;
+  margin: 5px 0 22px 0;
+  border: none;
+  height : 5%;
+  display: flex; /* 요소들을 가로로 정렬하기 위해 flexbox 사용 */
+  align-items: center; /* 체크박스와 텍스트를 수직 중앙 정렬 */
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+

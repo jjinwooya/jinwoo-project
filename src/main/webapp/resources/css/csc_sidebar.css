@@ -1,0 +1,30 @@
+@charset "EUC-KR";
+
+*{padding:0;margin:0}
+.btn-group{
+    padding: 4px 0px;
+}
+.btn-group:hover .dropdown-menu {
+    display:block; 
+    margin-left: 140px; 
+}
+.btn-group:hover .btn{
+    background: skyblue;
+    color: white;
+    width: 100px;
+    padding-top: 12px;
+    transition-duration: .3s;
+}
+.btn-group-vertical{
+    background: white;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+    width: 150px;
+}
+.sideVar_title{
+    padding-top: 15px;
+    margin: auto;
+}
+.sideVar{
+    margin: 60px auto;
+}

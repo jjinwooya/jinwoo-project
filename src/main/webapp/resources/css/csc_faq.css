@@ -1,0 +1,119 @@
+#csc_mainTitle {
+	margin-top: 20px;
+}
+
+.csc_faq_search {
+	vertical-align: middle;
+	text-align: center;
+	font-weight: bold;
+	background: #CCCCCC;
+	border-radius: 5px;
+	width: 300px;
+	height: 100px;
+	color: white;
+	margin-left: 5px;
+	position:relative;
+}
+
+.inner {
+	width:300px;
+	position:absolute;
+	top: 50%;
+	left: 50%;
+ 	transform: translate(-50%, -50%);
+}
+
+.csc_faq_search input[value="검색"] {
+	background: skyblue;
+	border:0;
+	color: white;
+}
+
+.csc_faq_sel {
+	display: flex;
+	justify-content: right;
+}
+
+/* faq 게시판 형식 */
+
+.csc_accordion {
+        max-width: 900px; /* 원하는 너비 설정 */
+        margin: 0 auto; /* 가운데 정렬 */
+    }
+
+
+input[id*="answer"]{
+	display: none;
+}
+
+input[id*="answer"] + label {
+	display:block;
+	padding:20px;
+	border: solid 1px skyblue;
+	border-bottom: 0;
+	border-radius:4px;
+	color:black;
+	font-weight:900;
+	background: #CCCCCC;
+	cursor: pointer;
+	position: relative;
+}
+input[id*="answer"] + label em{
+	position: absolute;
+	top:60%;
+	right: 30px;
+	display: inline-block;
+	width:25px;
+	height:25px;
+	margin-top: -15px;
+	background: url("../images/arrowDown.png") 0 0 no-repeat;
+	background-size: contain;
+	
+}
+
+input[id*="answer"] + label + div {
+	max-height: 0;
+	transition:all .35s;
+	overflow:hidden;
+	background: white;
+	font-size:14px;
+}
+
+/* input[id*="answer"] + label + div  p { */
+/* 	display: inline-block; */
+/* 	padding:20px; */
+/* } */
+input[id*="answer"]:checked + label + div {
+	max-height: 900px;
+}
+input[id*="answer"]:checked + label em{
+	position: absolute;
+	top:50%;
+	right: 30px;
+	display: inline-block;
+	width:50px;
+	height:30px;
+	margin-top: -15px;
+	
+}
+
+input[value="검색"] {
+	margin-top: 10px;
+	padding: 2px 5px;
+	border-radius: 3px;		
+}
+
+.faq_blub {
+    display: inline-block;
+    width: 25px;
+    height: 25px; 
+    background: url("../images/cscBulb.png") center center no-repeat; 
+    background-size: contain; 
+    margin-right: 10px; 
+    vertical-align: bottom;
+	margin-top:6px;    
+}
+
+.faq_category {
+	color: #339999;	
+}

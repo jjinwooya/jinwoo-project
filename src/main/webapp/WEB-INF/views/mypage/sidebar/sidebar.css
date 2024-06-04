@@ -1,0 +1,49 @@
+@charset "EUC-KR";
+
+
+
+/* .admin_header_left{ */
+/*    float:left; */
+/* } */
+/* .btn-group:hover .dropdown-menu { */
+/*    display:block;  */
+/*    margin-left: 130px;  */
+/* } */
+/* .btn-group:hover  .btn{ */
+/*    background: black; */
+/*    color: white; */
+/*    border-radius: 10px; */
+/* } */
+
+
+/* *{padding:0;margin:0} */
+.btn-group{
+    padding: 4px 0px;
+}
+.btn-group:hover .dropdown-menu {
+    display:block; 
+    margin-left: 130px; 
+}
+.btn-group:hover .btn{
+    background: skyblue;
+    color: white;
+    width: 100px;
+    padding-top: 12px;
+    transition-duration: .1s;
+}
+.btn-group-vertical{
+    background: white;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+}
+.sideVar_title{
+    padding-top: 15px;
+}
+.sideVar{
+    margin: 60px auto;
+}
+
+
+
+
+

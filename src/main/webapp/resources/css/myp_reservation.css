@@ -1,0 +1,46 @@
+@charset "EUC-KR";
+
+.container1{
+	height : 1350px;
+	width: 1400px; /* 해상도 1200*/
+	margin : auto;
+}
+
+.container2{
+	margin-top: 20px;
+}
+
+.box1{
+	margin: 0px;
+}
+
+.box2{
+	margin-bottom: 20px;
+}
+
+.box3{
+	text-align: center;
+	            word-break: break-word; /* 긴 단어 줄바꿈 */
+	
+}
+
+.paybox1{
+	display: flex;
+}
+
+.box4{
+/* 	top: 80px; */
+	margin-top: 100px;
+	width: 60px;
+	text-align: center;
+}
+
+        .form-control-plaintext {
+            white-space: normal; /* 줄바꿈 설정 */
+            word-wrap: break-word; /* 긴 단어 줄바꿈 */
+            word-break: break-word; /* 긴 단어 줄바꿈 */
+        }
+        .d-grid {
+            display: flex;
+            flex-direction: column;
+        }

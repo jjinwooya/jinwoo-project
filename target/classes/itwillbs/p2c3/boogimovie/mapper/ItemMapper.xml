@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.ItemMapper">
+	<select id="selectItemListSnack" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT * FROM item_info WHERE item_info_category = '스낵' ORDER BY item_info_price ASC
+	</select>
+	
+	<select id="selectItemListCombo" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT * FROM item_info WHERE item_info_category = '콤보' ORDER BY item_info_price ASC
+	</select>
+	
+	<select id="selectItemListPop" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT * FROM item_info WHERE item_info_category = '팝콘' ORDER BY item_info_price ASC
+	</select>
+	
+	<select id="selectItemListJuice" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT * FROM item_info WHERE item_info_category = '음료' ORDER BY item_info_price ASC
+	</select>
+	
+	<select id="selectItemNum" resultType="int">
+		SELECT item_info_num 
+		FROM item_info
+		WHERE item_info_name = #{item_name}
+	</select>
+		
+		
+	<select id="selectItemImage" resultType="String">
+		SELECT item_info_image
+		FROM item_info
+		WHERE item_info_num = #{item_info_num}
+	</select>
+	
+	
+		
+</mapper>

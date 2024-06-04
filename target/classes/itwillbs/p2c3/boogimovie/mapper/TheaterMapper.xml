@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="itwillbs.p2c3.boogimovie.mapper.TheaterMapper">
+ 
+ 	<select id="selectTheatersOrderbyName" resultType="itwillbs.p2c3.boogimovie.vo.TheaterVO">
+ 		SELECT *
+ 		FROM theater
+ 		ORDER BY theater_name
+ 	</select>
+ 	
+ 	<select id="selectTheatersOrderbyLike" resultType="itwillbs.p2c3.boogimovie.vo.TheaterVO">
+ 		SELECT *
+ 		FROM theater
+ 		ORDER BY theater_name
+ 	</select>
+ 	
+	
+	<select id="selectTheater">
+		SELECT * 
+		FROM theater
+		WHERE theater_num = #{theater_num}
+	</select>
+	
+
+	<select id="selectFacility" resultType="itwillbs.p2c3.boogimovie.vo.TheaterFacilityVO">
+		SELECT * 
+		FROM theater_facility 
+		WHERE theater_num = #{theater_num};
+	</select>
+	
+
+	
+	<select id="selectTheaterName" resultType="int">
+		SELECT theater_num
+		FROM theater
+		WHERE theater_name = #{theater_name}
+	</select>
+	
+	<select id="selectTheaterNoticeList" resultType="itwillbs.p2c3.boogimovie.vo.NoticeVO">
+		SELECT notice_num, notice_subject, notice_content, notice_date, theater_name
+		FROM notice 
+		JOIN theater 
+		ON notice.theater_num = theater.theater_num 
+		WHERE notice.theater_num = #{theater_num}
+		ORDER BY notice_date DESC
+	</select>
+	
+	<select id="selectNoticeList" resultType="itwillbs.p2c3.boogimovie.vo.NoticeVO">
+		SELECT notice_num, notice_subject, notice_content, notice_date, theater_name
+		FROM notice 
+		JOIN theater 
+		ON notice.theater_num = theater.theater_num 
+		WHERE notice_category = '극장'
+		ORDER BY notice_date DESC
+	</select>
+	
+	<select id="selectTheater2" resultType="itwillbs.p2c3.boogimovie.vo.TheaterVO">
+		SELECT *
+		FROM theater
+	</select>
+	
+	
+	<update id="updateTheater">
+		UPDATE theater
+		SET    theater_name = #{theater_name}
+		     , theater_address = #{theater_address}
+		     , theater_map_x = #{theater_map_x}
+		     , theater_map_y = #{theater_map_y}
+		     , theater_floor_info = #{theater_floor_info}
+		     , theater_parking_info = #{theater_parking_info}
+		     , theater_parking_fee = #{theater_parking_fee}
+		     , theater_public_bus = #{theater_public_bus}
+		     , theater_public_subway = #{theater_public_subway}
+		     , theater_hours = #{theater_hours}
+		     , theater_status = #{theater_status}
+		WHERE  theater_num = #{theater_num}
+	</update>
+	
+	<insert id="insertTheater">
+		INSERT INTO theater
+		VALUES (
+				null             			 -- 번호(idx) 자동 증가
+				, #{theater_name}
+				, #{theater_address}
+				, #{theater_map_x}     
+				, #{theater_map_y}
+				, #{theater_floor_info}
+				, #{theater_parking_info}
+				, #{theater_parking_fee}
+				, #{theater_public_bus}
+				, #{theater_public_subway}
+				, #{theater_hours}
+				, 1						
+		)
+	</insert>
+	
+	<delete id="deleteTheater">
+		DELETE FROM theater
+		WHERE theater_num = #{theater_num}
+	</delete>
+
+	<select id="selectTheaterEventList" resultType="itwillbs.p2c3.boogimovie.vo.EventVO">
+		SELECT *
+		FROM event e
+		JOIN event_type et
+		ON e.event_type_num = et.event_type_num 
+		WHERE e.event_type_num = '2'
+		ORDER BY event_num DESC
+	</select>
+	
+	<select id="selectFeeInfo" resultType="itwillbs.p2c3.boogimovie.vo.FeeAgeVO">
+		SELECT *
+		FROM fee_info
+	</select>
+	
+	<select id="selectFeeList" resultType="itwillbs.p2c3.boogimovie.vo.FeeAgeVO">
+		SELECT *
+		FROM fee
+	
+	</select>
+	
+	<select id="getTheaterScsList" resultType="map">
+		SELECT *, movie_name, movie_runtime,  movie_grade, screen_cinema_num, screen_seat_row, screen_seat_col
+		FROM screen_session ss JOIN movie m 
+		ON ss.movie_num = m.movie_num 
+		JOIN screen_info si ON ss.screen_num = si.screen_num 
+		JOIN theater t ON t.theater_num = si.theater_num 
+		WHERE t.theater_num = #{theater_num} AND ss.scs_date = #{scs_date}
+		ORDER BY m.movie_num;
+	</select>
+	
+	<select id="getMyTheater">
+		SELECT *
+		FROM my_theater
+		WHERE member_id = #{member_id}
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,185 @@
+	#seat_num{
+		margin-bottom : 50px;
+		position : relative;
+	}
+	
+	.choose_seat_section{
+		width : 1400px;
+		margin: 0 auto;
+	}
+	.opacity {
+		opacity : 0.6;
+		pointer : none;
+		
+	}
+	
+	div{
+		diplay : block;
+		unicode-bidi: isolate;
+		
+	}
+	
+	#wrapper {
+    	user-select: none;
+	}
+	
+	.center {
+	    text-align: center;
+	}
+	
+	section {
+	    display: block;
+	    unicode-bidi: isolate;
+	}
+	.seat {
+	    width: 25px;
+	    height: 25px;
+	    background-color: #a6a6a6;
+	    margin: 1px;
+	    display: inline-block;
+	    cursor: pointer;
+	    align-items: center;
+	    line-height: 30px;
+	    color: white;
+	    font-size: 0.8em;
+	    border-radius : 5px;
+	}
+	
+	.seat.selected {
+	    background-color: #B2FFFF; /* 선택된 좌석 색상 변경 */
+	    color: black;
+	}
+
+	
+	.asdf label {
+	    display: inline-block; /* 각 라벨을 가로로 정렬 */
+	}
+	
+	.asdf > div {
+    	display: inline-block;
+    	padding-right: 0; /* 라벨과 셀렉트 박스 사이의 간격을 조정합니다. */
+	}
+	
+	.asdf {
+	    display: flex;
+	    flex-direction: row;
+	    align-items: center;
+	    width:100%;
+	    justify-content: center; /* 요소를 가운데 정렬합니다. */
+	    text-align: center;
+		margin-top: 50px; /* 위쪽 여백 설정 */
+		margin-bottom: 40px;
+		margin-left: auto; /* 왼쪽 여백을 자동으로 설정 */
+		margin-right: auto; /* 오른쪽 여백을 자동으로 설정 */
+	}
+	
+	.person_info{
+		text-align : center;
+		margin-bottom : 40px;		
+	}
+	
+	
+	.asdf label, .asdf select {
+	    margin-bottom: 5px;
+	}
+	
+	.asdf > div {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    margin-right: 0px;
+    	width: 100px;
+	}
+	
+	.asdf > div:last-child {
+    	margin-right: 0; /* 마지막 요소의 우측 여백 제거 */
+	}
+	
+    
+    
+	.final_pay{
+		width : 70%;
+		height: 300px;
+		background-color : white;
+		height:20%;
+	} 
+	
+
+	
+	.choose_seat_title{
+		margin: 50px 350px;
+	}
+	
+	.pay_movie_img{
+		border-right: solid 3px black;
+		paading-top : 30px;
+	}
+	
+	.pay_theater{
+		border-right: solid 3px black;
+	}
+	
+	.pay_seat{
+		border-right: solid 3px black;
+	}
+	
+	.pay_fee{
+		border-right: solid 3px black;
+	}
+	
+	
+	
+	.box1{
+		height: 900px;
+		margin : auto;
+	}
+	
+	.choose_person{
+		width: 70%;
+		height : 65%;
+		margin: 20px auto;
+	}
+	
+	img{
+		padding-top : 20px;
+	}
+	
+	.movie_ex{
+		font-size : 15px;
+		font-color : white;
+		font-weight : bold;
+	}
+	
+	.theater_ex{
+		font-size : 17px;
+ 		padding-top: 50px;
+ 		font-color : white;
+ 		font-weight : bold; 
+	}
+	
+	.seat_ex{
+ 		padding-top: 70px ;
+		font-size : 15px;
+		font-color : white;
+		font-weight : bold;
+	}
+	
+	.fee_ex{
+		font-size : 10px;
+ 		padding-top: 70px;
+ 		font-color : white; 
+ 		font-weight : bold;
+	}
+	
+	.pay_button{
+		padding-top: 50px;
+	}
+	
+	
+	
+	
+.btn-gradient.small, 
+.btn-effect.small {
+  padding: 8px 18px;  
+  font-size: 14px;
+}

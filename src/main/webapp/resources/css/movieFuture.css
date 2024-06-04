@@ -1,0 +1,105 @@
+
+* {
+	margin: 0;
+	padding: 0;
+/*  	border: 1px solid skyblue;   */
+}
+
+body {
+/* 	background-color: #fffde7; */
+}
+
+#wrap {
+	width: 1400px;
+	margin: 0 auto;
+}
+
+header {
+/* 	background-color: #ffe082; */
+}
+
+article {
+	position: relative;
+	width: 1400px;
+	height: 800px;
+/* 	background-color: #ffd54f; */
+	overflow: hidden;
+}
+
+article video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	max-width: 100%;
+	max-height: 100%;
+}
+
+section {
+	overflow: hidden;
+	width: 100%;
+	height: 700px; 
+/* 	background-color : #ffca28; */
+	display: flex;
+	flex-wrap: wrap;
+}
+ 
+ section h1 {
+ 	position: relative;
+    text-align: center; /* 가운데 정렬 */
+    font-size: 32px; /* 폰트 크기 수정 */
+    width: 100%; /* 너비 조정 */
+/*     height: 40px; */
+	white-space: nowrap; 
+	
+}
+section>div {
+/* 	width: 20%; */
+	margin: 1%;
+	margin: 1% 1% 0;  
+	height : 170px;
+/* 	background-color: #ff980; */
+	
+}
+.nowMovie {
+	width: 100%;
+	height: 100px;
+}
+.nowMovie .btn{
+	margin-left: 30px; 
+	font-size: 40px;
+	white-space: nowrap;
+}
+
+.list {
+	width:1400px;
+	margin-right:10px;
+	margin-top: 10px;
+	display: flex;
+	margin-bottom: 300px;
+}
+.movie {
+	text-align: center;
+}
+
+.movie img {
+	padding: 30px;
+	width: 280px;
+	height: 400px;
+	display: flex;
+}
+
+.movie:hover {
+	transform: scale(1.2);
+	transition: 1.0s;
+	transition-delay: 1s;
+}
+ 
+
+
+
+footer {
+	width: 1400px;
+	height: 100px;
+/* 	background-color: #ffb300; */
+}

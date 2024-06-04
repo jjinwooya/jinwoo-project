@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.PaymentMapper">
+
+	<select id="getMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO"> 
+		SELECT *
+		FROM member
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<update id="usePoint">
+		UPDATE member
+		SET member_point = #{member_point}
+		WHERE member_id = #{member_id}
+	</update>
+	
+	<update id="updateMemberPoint">
+		UPDATE member
+		SET member_point = #{member_point}
+		WHERE member_id = #{member_id}
+	</update>
+	
+	<insert id="savePayInfo">
+		INSERT INTO pay
+		VALUES (
+			   null
+			 , #{ticket_pay_type}
+			 , now()
+			 , #{ticket_pay_status}
+			 , null
+			 , #{ticket_pay_price}
+			 , #{member_id}
+			 , #{scs_num}
+			 <choose>
+			 	<when test="coupon_num != null and !coupon_num.equals('') and coupon_num != 0">
+				 	, #{coupon_num}
+			 	</when>
+			 	<otherwise>
+			 		, null
+			 	</otherwise>
+			 </choose>
+			 , #{merchant_uid}
+			 , #{use_point}
+			 , #{save_point}
+		)
+	</insert>
+	
+	<select id="getPayInfo" resultType="itwillbs.p2c3.boogimovie.vo.PayVO">
+		SELECT *
+		FROM pay
+		WHERE merchant_uid = #{merchant_uid}
+	</select>
+	
+	<select id="getScreenSession" resultType="itwillbs.p2c3.boogimovie.vo.ScreenSessionVO">
+		SELECT *
+		FROM reserve_view
+		WHERE scs_num = #{scs_num} 
+	</select>
+	
+	<select id="selectPayInfo" resultType="itwillbs.p2c3.boogimovie.vo.PayVO">
+		SELECT *
+		FROM pay
+		WHERE member_id = #{member_id}
+	</select>
+	
+	
+	<select id="selectStorePayInfo" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+		SELECT *
+		FROM store_pay
+		WHERE member_id = #{member_id}
+	</select>
+	
+	<insert id="insertCart">
+		INSERT INTO cart
+		VALUES (
+			null
+			, #{cart_id}
+			, #{item_info_num}
+			, #{item_quantity}
+			, #{item_total_price}
+			, #{member_id}
+		)
+		
+	</insert>
+	
+	<insert id="saveStorePayInfo">
+		INSERT INTO store_pay
+		VALUES (
+			null
+			, #{store_pay_type}
+			, now()
+			, #{store_pay_status}
+			, null
+			, #{store_pay_price}
+			<choose>
+			 	<when test="coupon_num != null and !coupon_num.equals('') and coupon_num != 0">
+				 	, #{coupon_num}
+			 	</when>
+			 	<otherwise>
+			 		, null
+			 	</otherwise>
+			 </choose>
+			, #{member_id}
+			, #{merchant_uid}
+			, #{use_point}
+			, #{cart_id}
+			, #{save_point}
+		 )
+	</insert>
+	
+	<select id="getStorePayInfo" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+		SELECT *
+		FROM store_pay
+		WHERE merchant_uid = #{merchant_uid}
+	</select>
+	
+	<select id="getCartInfo" resultType="itwillbs.p2c3.boogimovie.vo.CartVO">
+		SELECT *
+		FROM cart
+		WHERE cart_id = #{cart_id}
+	</select>
+	
+	<select id="getItemInfo" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT *
+		FROM item_info
+		WHERE item_info_num = #{item_info_num}
+	</select>
+	
+	<insert id="saveTicketInfo">
+		INSERT ticket
+		VALUES
+		(null, #{ticket_seat_info}, #{ticket_price}, #{ticket_keyword}, #{ticket_pay_num})
+	</insert>
+	
+	<update id="updateEmptySeat" >
+		UPDATE screen_session 
+		SET	scs_empty_seat = scs_empty_seat - #{totalPeople}
+		WHERE scs_num = #{scs_num}
+	</update>
+
+	<select id="getPaymentInfoView" resultType="map">
+		SELECT *
+		FROM payment_info
+		WHERE ticket_pay_num = #{ticket_pay_num}
+	</select>	
+	
+	<select id="getCoupon" resultType="itwillbs.p2c3.boogimovie.vo.CouponVO">
+		SELECT *
+		FROM coupon_view
+		WHERE coupon_num = #{coupon_num}
+	</select>
+	
+	
+</mapper>

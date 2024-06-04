@@ -1,0 +1,77 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+.csc-title {
+	font-style: italic;
+}
+
+.csc_explain {
+	box-sizing: border-box;
+	background-color: #E0E0E0;
+	padding: 5px;
+}
+
+#csc_agree {
+	box-sizing: border-box;
+	width:500px;
+	height: 250px;
+	font-size:0.6em;
+	border: 1px black solid;
+	padding: 5px;
+	overflow-y:scroll;
+	
+}
+
+span {
+	font-size:0.6em;
+	padding-left: 45px;
+	color:#FF0000;
+	display: block;
+	margin-bottom: 10px;
+}
+
+span::before {
+	content: "*";
+}
+
+textarea {
+	resize: none;
+}
+
+
+
+.submit_button {
+	text-align: center;
+}
+.submit_button input[value="문의"]{
+	padding:5px 10px;
+	background: #1E90FF;
+	border-radius: 5px;
+}
+
+.csc_check_scope::before {
+	content:"*";
+	font-size:20px;
+	color:#FF0000;
+}
+.csc_check_scope {
+	padding-left:10px;
+}
+
+#csc_checkbox {
+    vertical-align: middle;
+}
+
+.inquiry_warning {
+	text-align: right;
+	font-size: 0.6em;
+	color:#FF0000;
+}
+
+.inquiry_warning_star::after {
+	content:"*";
+	color:#FF0000;
+}
+
+#csc_mainTitle {
+	margin-top: 20px;
+}

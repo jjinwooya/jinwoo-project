@@ -1,0 +1,28 @@
+@charset "EUC-KR";
+
+.container1{
+	height : 1300px;
+	width: 1400px; /* ÇØ»óµµ 1200*/
+	margin : auto;
+}
+
+.container2{
+	margin-top: 20px;
+}
+
+
+.box1{
+	height: 400px;
+	
+}
+
+.textarea1{
+	margin-top: 10px;
+	text-align: left;
+	margin: 0 auto;
+}
+
+.table2{
+	margin-top: 0px;
+}
+

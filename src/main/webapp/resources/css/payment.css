@@ -1,0 +1,99 @@
+body {
+	margin: 0;
+	padding: 0;	
+}
+
+article {
+	width: 1400px;
+	margin: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+
+
+/* 	할인 적용 아코디언 */
+input[id *= "payment_discount"] {
+	display: none;
+}
+
+input[id *= "payment_discount"] + label {
+	display: block;
+	padding: 10px;
+	border: 1px solid black;
+	color: black;
+	background-color: #D3D3D3;
+	cursor: pointer;
+}
+
+input[id *= "payment_discount"] + label  + div {
+	max-height: 0;
+	transition: all  .35s;
+	overflow: hidden;
+	background: white;
+}
+
+input[id *= "payment_discount"] + label  + div p {
+	display: inline-block;
+}
+
+input[id *= "payment_discount"]:checked + label + div {
+	max-height:200px;
+	padding: 20px;
+	border: 1px solid black;
+	border-top: none;
+}
+
+/* 	결제 수단 선택 탭 */
+fieldset {
+	padding: 20px;
+}
+
+form {
+	margin: 20px 0;;
+}
+
+
+input[id *= "payment_method"] + label {
+	cursor: pointer;
+}
+
+.conbox {
+	width: 0 auto;
+	height: 0 auto; 
+	display: none;  
+	padding: 12px;
+	margin: 12px 12px;
+}
+
+input[id="payment_method1"]:checked ~.payment_method1_div {
+	display:block;
+			
+}
+
+input[id="payment_method2"]:checked ~.payment_method2_div {
+	display:block;
+}
+
+input[id="payment_method3"]:checked ~.payment_method3_div {
+	display:block;
+}
+
+input[id="payment_method4"]:checked ~.payment_method4_div {
+	display:block;
+}
+
+.payment_status{
+	border: 1px solid black;	
+	border-radius: 20px;
+	height: 0 auto; 
+	padding: 12px;		
+	
+}
+
+.payment_status_box {
+	border: 1px solid black;
+	border-radius: 10px;
+	margin: 10px 0;
+	padding: 8px;
+}

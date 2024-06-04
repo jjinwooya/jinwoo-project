@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.ScreenMapper">
+
+	
+	<select id="selectScreenInfoList" resultType="itwillbs.p2c3.boogimovie.vo.ScreenInfoVO">
+		SELECT *, theater_name
+		FROM   screen_info
+		JOIN   theater
+		ON     screen_info.theater_num = theater.theater_num
+	 </select>
+	 
+	 <select id="selectScreeninfo" resultType="itwillbs.p2c3.boogimovie.vo.ScreenInfoVO">
+	 	SELECT *, theater_name
+		FROM   screen_info
+		JOIN   theater
+		ON     screen_info.theater_num = theater.theater_num 
+	 	WHERE  screen_num = #{screen_num}
+	 </select>
+	
+	
+	<update id="updateScreeninfo">
+		UPDATE screen_info
+		SET    theater_num = #{theater_num}
+		     , screen_cinema_num = #{screen_cinema_num}
+		     , screen_seat_row = #{screen_seat_row}
+		     , screen_seat_col = #{screen_seat_col}
+		     , screen_status = #{screen_status}
+		WHERE  screen_num = #{screen_num}
+	</update>
+	
+	<insert id="insertScreeninfo">
+		INSERT INTO screen_info
+		VALUES (
+				null					 -- 번호(idx) 자동 증가
+			  , #{theater_num}
+			  , #{screen_cinema_num}
+			  , #{screen_seat_row}
+			  , #{screen_seat_col}
+			  , #{screen_status}
+		)
+	</insert>
+	
+	<delete id="deleteScreeninfo">
+		DELETE FROM screen_info
+		WHERE  screen_num = #{screen_num}
+	</delete>
+	
+	
+	<select id="selectNewCinemaNum" resultType="int">
+		SELECT MAX(screen_cinema_num)+1
+		FROM screen_info
+		WHERE theater_num = #{theater_num};
+	</select>
+	
+</mapper>

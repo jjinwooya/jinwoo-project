@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.MovieMapper">
+	<select id="selectMovieInfo" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+<!-- 		 <![CDATA[ -->
+<!--    			 SELECT * -->
+<!--     		 FROM movie -->
+<!--     		 WHERE movie_open_date <= CURRENT_DATE() -->
+<!--     		 ORDER BY movie_open_date DESC -->
+<!--     	]]> -->
+		select *
+		from movie
+		WHERE Current_Date() BETWEEN movie_open_date AND movie_end_date 
+	</select>
+	
+	<select id="selectMovie" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT *
+		FROM movie
+ 		<if test="movie_num != null and movie_num != ''"> 
+ 		    WHERE movie_num = #{movie_num} 
+ 		</if> 
+		<if test="movie_name != null and movie_name != ''">
+			WHERE movie_name = #{movie_name}
+		</if>
+	</select>
+	
+	<select id="selectMovieInfoLike" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT *
+		FROM movie
+		ORDER BY movie_like;
+	</select>
+	
+	<select id="selectMovieInfoAbc" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT *
+		FROM movie
+		ORDER BY movie_name;
+	</select>
+	
+	<select id="selectMovieGenreNum" resultType="int">
+		SELECT genre_num
+		FROM movie_genre
+		WHERE genre_name = #{genre_name}
+	</select>
+	
+	<select id="selectMovieInfoGenre" parameterType="map" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		 <![CDATA[
+		    SELECT *
+		    FROM movie
+		    WHERE movie_open_date <= CURRENT_DATE()
+		    ]]>
+   			 <if test="genreList != null and genreList.size() > 0">
+	        <foreach item="genre" collection="genreList" open="AND (" separator=" OR " close=")">
+	         movie_genre LIKE CONCAT('%', #{genre}, '%')
+	        </foreach>
+        </if>
+	</select>
+		
+	<select id="selectMovieFuture" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		 <![CDATA[
+   			 SELECT *
+    		 FROM movie
+    		 WHERE movie_open_date > CURRENT_DATE()
+    		 ORDER BY movie_open_date ASC
+    	]]>
+	</select>	
+	
+	<select id="selectFutureMovieInfo" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT *
+		FROM movie
+		WHERE movie_num = #{movie_num}
+	</select>
+	
+	<select id="selectMovieTrail" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">	
+		 <![CDATA[
+		SELECT movie_trailler
+		FROM movie
+		WHERE movie_trailler != '' 
+    	AND movie_open_date <= CURRENT_DATE()
+		ORDER BY RAND()
+		LIMIT 1
+		]]>
+	</select>	
+	
+	<select id="selectMovieFutureTrail" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">	
+		 <![CDATA[
+		SELECT movie_trailler
+		FROM movie
+		WHERE movie_trailler != '' 
+    	AND movie_open_date > CURRENT_DATE()
+		ORDER BY RAND()
+		LIMIT 1
+		]]>
+	</select>	
+	
+	<select id="searchMovie" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO"> 
+		SELECT * 
+		FROM movie
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				movie_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		
+	</select>
+		
+		
+</mapper>

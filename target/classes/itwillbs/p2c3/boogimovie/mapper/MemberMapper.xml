@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.MemberMapper">
+	<insert id="insertMember">
+		INSERT INTO member(member_id,
+							member_name, 
+							member_pwd,
+							member_email,
+							member_tel,
+							member_addr,
+							member_movie_genre,
+							member_status,
+							member_point,
+							member_reg_date,
+							member_withdraw_date,
+							member_birth,
+							member_my_theater1,
+							member_my_theater2,
+							member_my_theater3)
+		VALUES (
+			#{member_id}  -- member_id
+			,#{member_name} -- member_name
+			,#{member_pwd} -- member_pwd
+			,#{member_email} -- member_email
+			,#{member_tel} -- member_tel
+			,#{member_addr} -- member_addr
+			,#{member_movie_genre} -- member_movie_genre
+			,"활동" -- member_status
+			,"0" -- member_point
+			,now() -- member_reg_date
+			,null	-- member_withdraw_date
+			,#{member_birth} -- member_birth
+			,null -- member_my_theater1
+			,null -- member_my_theater2
+			,null -- member_my_theater3
+		);
+	</insert>
+	
+
+	<select id="preRegMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT *
+		FROM member
+		WHERE member_name = #{member_name} 
+		AND member_birth = #{member_birth}
+	</select>
+	
+	<select id="preRegMemberEmail" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT *
+		FROM member
+		WHERE member_email = #{member_email}
+	</select>
+
+	<select id="isCorrectMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT * 
+		FROM member
+		WHERE member_id = #{member_id}
+	</select>
+
+	<select id="memberPwdSearch" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT *
+		FROM member
+		WHERE member_id = #{member_id} and member_email = #{member_email}
+	</select>
+	
+	<select id="memberMovieGenreSearch" resultType="String">
+		SELECT member_movie_genre
+		FROM member
+		WHERE member_id = #{sId}
+	</select>	
+	
+	<select id="selectTheatersMyTheater" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT member_my_theater1, member_my_theater2, member_my_theater3
+		FROM member
+		WHERE member_id = #{sId} 
+	</select>
+	
+	<insert id="insertAuthInfo">
+		INSERT INTO mail_auth_info
+		VALUES
+		(#{member_id}, #{auth_code})
+	</insert>
+		
+	<select id="selectAuthInfo" resultType="itwillbs.p2c3.boogimovie.vo.MailAuthInfoVO">
+		SELECT * 
+		FROM mail_auth_info
+		WHERE member_id = #{member_id}
+		AND auth_code = #{auth_code}
+	</select>
+		
+	<delete id="deleteAuthInfo">
+		DELETE
+		FROM mail_auth_info
+		WHERE member_id = #{member_id}
+	</delete>
+	
+	<update id="updateMemberPwd">
+		UPDATE member
+		SET member_pwd = #{member_pwd}
+		WHERE member_id = #{member_id}
+	</update>
+</mapper>

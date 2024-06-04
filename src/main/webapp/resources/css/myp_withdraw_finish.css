@@ -1,0 +1,31 @@
+@charset "EUC-KR";
+
+.container1{
+	height : 1300px;
+	width: 1400px; /* 해상도 1200*/
+	margin : auto;
+}
+
+.container2{
+	margin-top: 20px;
+}
+
+h1{
+	text-align: center;
+}
+
+.box1{
+	margin-top: 120px;
+	text-align: center;
+}
+
+.box2{
+	margin-left: 90px;
+}
+/* --------------------  버튼  ----------------------*/
+.content {
+  display: flex; /* 가로로 정렬 */
+  flex-direction: row; /* 수평으로 배치 */
+  margin-top: 2em; /* 위쪽 여백 추가 */
+}
+

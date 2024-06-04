@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itwillbs.p2c3.boogimovie.mapper.AdminMapper">
+	
+<!-- 회원 수 조회 -->
+	<select id="countMemberList" resultType="int">
+		SELECT COUNT(*)
+		FROM member
+	</select>
+
+<!--  현재상영작 수 조회 -->
+	<select id="movieCount" resultType="int">
+		SELECT COUNT(*)
+		FROM
+			movie
+		WHERE 
+			CURRENT_DATE() BETWEEN movie_open_date AND movie_end_date
+	</select>
+	
+<!-- 금일 상영작 수 조회 -->
+	<select id="countMoviePlan" resultType="int">
+		SELECT COUNT(*) 
+		FROM 
+			screen_session
+		WHERE
+			scs_date = CURRENT_DATE()
+	</select>
+	
+<!-- 금일 예매 수 조회 -->
+	<select id="countReserve" resultType="int">
+		SELECT COUNT(*) 
+		FROM pay
+		WHERE 
+			DATE_FORMAT(ticket_pay_date, '%Y-%m-%d') = CURRENT_DATE()
+		AND 
+			ticket_pay_cancel_date IS NULL
+	</select>
+	
+<!-- 월간 매출 조회 -->
+	<select id="getMonthSales" resultType="map">
+		SELECT 
+			t.theater_name , SUM(p.ticket_pay_price) AS 'Sales' 
+		FROM 
+			pay p
+		JOIN 
+			screen_session ss 
+		ON 
+			ss.scs_num = p.scs_num 
+		JOIN 
+			screen_info si 
+		ON 
+			ss.screen_num = si.screen_num 
+		JOIN 
+			theater t 
+		ON 
+			t.theater_num = si.theater_num
+		WHERE 
+			p.ticket_pay_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) 
+		GROUP BY 
+			t.theater_name
+	</select>
+	
+<!-- 회원 리스트 조회 -->
+	<select id="selectMemberList" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT * 
+		FROM member
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+				OR member_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY
+			member_reg_date desc
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+	</select>
+
+<!-- 회원 리스트 수 조회 -->
+	<select id="selectMemberListCount" resultType="int">
+		SELECT COUNT(*) 
+		FROM member
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+				OR member_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+<!-- 회원 상세보기 -->
+	<select id="selectMember" resultType="itwillbs.p2c3.boogimovie.vo.MemberVO">
+		SELECT * 
+		FROM member
+		WHERE member_id = #{id}
+	</select>
+	
+<!-- 회원 삭제 -->
+	<delete id="deleteMember">
+		DELETE FROM member
+		WHERE member_id = #{id}
+	</delete>
+	
+<!-- 리뷰 리스트 조회 -->
+	<select id="selectReviewList" resultType="itwillbs.p2c3.boogimovie.vo.ReviewVO">
+		SELECT * 
+		FROM review
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY
+			review_date desc
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+	</select>
+
+<!-- 리뷰 리스트 수 조회 -->
+	<select id="selectReviewListCount" resultType="int">
+		SELECT COUNT(*) 
+		FROM review 
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+	
+<!-- 리뷰 삭제 -->
+	<delete id="deleteReview">
+		DELETE FROM review
+		WHERE review_num = #{review_num}
+	</delete>
+	
+<!-- 예매 리스트 조회 -->
+	<select id="selectReserveList" resultType="hashmap">
+		SELECT 
+			rv.*
+			, t.*
+			, p.*
+			, mv.movie_name
+			, th.theater_name
+		FROM 
+			reserve_view rv 
+		JOIN 
+			pay p 
+		ON 
+			p.scs_num = rv.scs_num
+		JOIN 
+			ticket t 
+		ON 
+			t.ticket_pay_num = p.ticket_pay_num
+		JOIN 
+			movie mv
+		ON 
+			mv.movie_num = rv.movie_num
+		JOIN 
+			theater th
+		ON
+			th.theater_num = rv.theater_num
+		<if test="!searchKeyword.equals('')">
+		WHERE
+			member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY 
+			p.ticket_pay_date desc
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+		
+	</select>
+	
+<!-- 예매 리스트 수 조회 -->
+	<select id="selectReserveListCount" resultType="int">
+		SELECT 
+			count(*)
+		FROM 
+			reserve_view rv 
+		JOIN 
+			pay p 
+		ON 
+			p.scs_num = rv.scs_num
+		JOIN 
+			ticket t 
+		ON 
+			t.ticket_pay_num = p.ticket_pay_num
+		JOIN 
+			movie mv
+		ON 
+			mv.movie_num = rv.movie_num
+		JOIN 
+			theater th
+		ON
+			th.theater_num = rv.theater_num
+		<if test="!searchKeyword.equals('')">
+		WHERE
+			member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		
+	</select>
+
+<!-- 예매 리스트 조회 -->
+	<select id="selectReserve" resultType="hashmap">
+		SELECT 
+			rv.*
+			, t.*
+			, p.*
+			, mv.movie_name
+			, th.theater_name
+		FROM 
+			reserve_view rv 
+		JOIN 
+			pay p 
+		ON 
+			p.scs_num = rv.scs_num
+		JOIN 
+			ticket t 
+		ON 
+			t.ticket_pay_num = p.ticket_pay_num
+		JOIN 
+			movie mv
+		ON 
+			mv.movie_num = rv.movie_num
+		JOIN 
+			theater th
+		ON
+			th.theater_num = rv.theater_num
+		WHERE 
+			ticket_num = #{ticket_num}
+		LIMIT 1
+	</select>
+	
+<!-- 좌석정보 가져오기 -->
+	<select id="selectSeatInfo" resultType="hashmap">
+		SELECT 
+			t.ticket_seat_info
+		FROM 
+			ticket t
+		JOIN 
+			pay p 
+		ON 
+			t.ticket_pay_num = p.ticket_pay_num
+		WHERE 
+			t.ticket_pay_num = #{ticket_pay_num};
+	</select>
+	
+<!-- 영화 검색어로 리스트 조회 -->
+	<select id="searchMovieList" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO"> 
+		SELECT * 
+		FROM movie
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				movie_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY
+			movie_open_date desc
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+	</select>
+
+<!-- 영화 리스트 수 조회 -->
+	<select id="selectMovieListCount" resultType="int"> 
+		SELECT count(*) 
+		FROM movie
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				movie_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+	
+<!-- 영화 리스트 조회 -->
+	
+	<select id="selectMovieList" resultType="hashmap">
+		select *
+		from movie
+		WHERE Current_Date() BETWEEN movie_open_date AND movie_end_date 
+	</select>
+
+<!-- 영화 상세보기 -->
+	<select id="selectMovie" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT * 
+		FROM movie
+		WHERE movie_num = #{movie_num}
+	</select>
+
+<!-- 영화 확인 -->
+	<select id="getMovie" resultType="itwillbs.p2c3.boogimovie.vo.MovieVO">
+		SELECT * 
+		FROM movie
+		WHERE movie_name = #{movie_name}
+	</select>
+	
+<!-- 영화 등록하기 -->
+	<insert id="insertMovie">
+		INSERT INTO movie
+		(	  movie_name
+			, movie_director
+			, movie_poster
+			, movie_trailler
+			, movie_open_date
+			, movie_end_date
+			, movie_grade
+			, movie_summary
+			, movie_runtime
+			, movie_stillCut
+			, movie_stillCut2
+			, movie_stillCut3
+			, movie_genre
+		)
+		VALUES
+		(	  #{movie_name}
+			, #{movie_director}
+			, #{movie_poster}
+			, #{movie_trailler}
+			, #{movie_open_date}
+			, #{movie_end_date}
+			, #{movie_grade}
+			, #{movie_summary}
+			, #{movie_runtime}
+			, #{movie_stillCut}
+			, #{movie_stillCut2}
+			, #{movie_stillCut3}
+			, #{movie_genre}
+		)
+	</insert>
+	
+<!-- 영화 수정 업데이트 -->
+	<update id="updateMovie">
+		UPDATE movie
+		SET movie_name = #{movie_name}
+		  , movie_director = #{movie_director}
+		  , movie_poster = #{movie_poster}
+		  , movie_trailler = #{movie_trailler}
+		  , movie_open_date = #{movie_open_date}
+		  , movie_end_date = #{movie_end_date}
+		  , movie_grade = #{movie_grade}
+		  , movie_summary = #{movie_summary}
+		  , movie_runtime = #{movie_runtime}
+		  , movie_stillCut = #{movie_stillCut}
+		  , movie_stillCut2 = #{movie_stillCut2}
+		  , movie_stillCut3 = #{movie_stillCut3}
+		  , movie_genre = #{movie_genre}
+		WHERE movie_num = #{movie_num}
+	</update>
+	
+	<delete id="deleteMovie">
+		DELETE FROM movie
+		WHERE movie_num = #{movie_num}
+	</delete>
+	
+<!-- 극장이름 리스트 -->
+	<select id="getTheaterList" resultType="hashmap">
+		SELECT 
+			theater_num, theater_name
+		FROM
+			theater
+	</select>
+	
+<!-- 좌석정보 가져오기 -->
+	<select id="getSeatInfo" resultType="itwillbs.p2c3.boogimovie.vo.ScreenInfoVO">
+		SELECT *
+		FROM 
+			screen_info
+		WHERE 
+			theater_num = #{theater_num}
+        AND 
+        	screen_cinema_num = #{screen_cinema_num}
+        LIMIT 1
+	</select>
+	
+<!-- 상영관리 - 상영관 정보 불러오기 -->
+	<select id="getScreensByTheater">
+		SELECT *
+		FROM 
+			screen_info 
+		WHERE 
+			theater_num = #{theater_num}
+	
+	</select>
+	
+<!-- 상영 등록 -->
+<insert id="insertMoviePlan">
+    <selectKey keyProperty="screen_num" resultType="int" order="BEFORE">
+        SELECT screen_num
+        FROM screen_info
+        WHERE theater_num = #{theater_num}
+        AND screen_cinema_num = #{screen_cinema_num}
+        LIMIT 1
+    </selectKey>
+
+    INSERT INTO screen_session (
+        scs_num, movie_num, scs_empty_seat, screen_dimension, scs_date, scs_start_time, scs_end_time, screen_num
+    ) VALUES (
+        null,
+        #{movie_num},
+        #{scs_empty_seat},
+        #{screen_dimension},
+        #{scs_date},
+        CASE WHEN #{scs_start_time} = '9:00' THEN CONCAT('0', #{scs_start_time}) ELSE #{scs_start_time} END,
+        #{scs_end_time},
+        #{screen_num}
+    )
+</insert>
+	
+<!-- 상영일정 삭제 -->
+	<delete id="deleteMoviePlan">
+		DELETE FROM 
+			screen_session
+		WHERE 
+			scs_num = #{scs_num}
+	</delete>
+	
+<!-- 상영일정 리스트 -->
+	<select id="selectMoviePlanList" resultType="map">
+		SELECT 
+			ss.*, si.screen_cinema_num, t.theater_name, mv.movie_name 
+		From 
+			screen_session ss
+		Join 
+			screen_info si
+		ON 
+			ss.screen_num =si.screen_num
+		JOIN 
+			movie mv 
+		ON 
+			mv.movie_num = ss.movie_num
+		JOIN 
+			theater t
+		ON 
+			t.theater_num = si.theater_num
+		WHERE 
+			ss.scs_date >= CURRENT_DATE()
+		ORDER BY 
+			ss.scs_date desc
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+	</select>
+
+<!-- 상영일정 리스트 수 -->
+	<select id="selectMoviePlanListCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		From 
+			screen_session
+		WHERE 
+			scs_date >= CURRENT_DATE()
+	</select>
+	
+<!-- 상영 시작, 종료시간 가져오기 -->
+	<select id="getMovieTimeList">
+		SELECT 
+			cast((ss.scs_start_time - 2) as char) as scs_start_time
+		  , cast((ss.scs_end_time + 2) as char) as scs_end_time  
+		FROM 
+			screen_session ss
+		JOIN 
+			screen_info si
+		ON 
+			ss.screen_num = si.screen_num
+		WHERE 
+			1=1
+		AND 
+			si.theater_num = #{theaterSelect}
+		AND 
+			si.screen_cinema_num = #{screenSelect}
+		AND 
+			ss.scs_date = #{scs_date}
+	</select>
+	
+<!-- 상영일정 조회하기 -->
+	<select id="getMoivePlanList" resultType="itwillbs.p2c3.boogimovie.vo.ScreenSessionVO">
+		SELECT 
+			ss.*, si.screen_cinema_num, t.theater_name, mv.movie_name 
+		From 
+			screen_session ss
+		Join 
+			screen_info si
+		ON 
+			ss.screen_num =si.screen_num
+		JOIN 
+			movie mv 
+		ON 
+			mv.movie_num = ss.movie_num
+		JOIN 
+			theater t
+		ON 
+			t.theater_num = si.theater_num
+		WHERE
+			scs_date = #{scs_date} AND t.theater_num = #{theater_num} 
+		<if test="!screen_cinema_num == 0">
+			AND
+				screen_cinema_num = #{screen_cinema_num}
+		</if>
+		ORDER BY 
+			ss.scs_start_time
+<!-- 		LIMIT  -->
+<!-- 			#{startRow} -->
+<!-- 			, #{listLimit} -->
+	</select>
+
+<!-- 상영일정 수 조회하기 -->
+<!-- 	<select id="getMoivePlanListCount" resultType="int"> -->
+<!-- 		SELECT  -->
+<!-- 			count(*) -->
+<!-- 		From  -->
+<!-- 			screen_session ss -->
+<!-- 		Join  -->
+<!-- 			screen_info si -->
+<!-- 		ON  -->
+<!-- 			ss.screen_num =si.screen_num -->
+<!-- 		JOIN  -->
+<!-- 			movie mv  -->
+<!-- 		ON  -->
+<!-- 			mv.movie_num = ss.movie_num -->
+<!-- 		JOIN  -->
+<!-- 			theater t -->
+<!-- 		ON  -->
+<!-- 			t.theater_num = si.theater_num -->
+<!-- 		WHERE -->
+<!-- 			scs_date = #{scs_date} AND t.theater_num = #{theater_num}  -->
+<!-- 	</select> -->
+	
+	
+<!-- 쿠폰페이지 쿠폰타입리스트 -->
+	<select id="getCouponTypeListSearch" resultType="itwillbs.p2c3.boogimovie.vo.CouponVO">
+		SELECT *	
+		FROM 
+			coupon_type
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				coupon_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		LIMIT 
+			#{startRow}
+			, #{listLimit}
+	</select>
+
+<!-- 쿠폰페이지 쿠폰타입리스트 수 -->
+	<select id="getCouponListCount" resultType="int">
+		SELECT count(*)	
+		FROM 
+			coupon_type
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				coupon_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+	
+<!-- 쿠폰 등록하기 -->
+	<insert id="insertCoupon">
+		INSERT INTO coupon_type
+		VALUES (
+			null
+			, #{coupon_name}
+			, #{coupon_value}
+		)
+	</insert>
+
+<!-- 쿠폰 삭제하기 -->
+	<delete id="deleteCoupon">
+		DELETE FROM coupon_type
+		where 
+			coupon_type_num = #{coupon_type_num}
+	</delete>
+	
+<!-- 쿠폰타입리스트 -->
+	<select id="getCouponTypeList" resultType="hashmap">
+		SELECT *	
+		FROM 
+			coupon_type
+	</select>
+
+	
+<!-- 이벤트 등록 -->
+	<insert id="insertEvent">
+		INSERT INTO event(
+			event_subject
+			, event_type_num
+			, event_reg_date
+			, event_start_date
+			, event_end_date
+			, event_thumbnail
+			, event_image
+			, coupon_type_num
+		)
+		VALUES(
+			#{event_subject}
+			, #{event_type_num}
+			, now()
+			, #{event_start_date}
+			, #{event_end_date}
+			, #{event_thumbnail}
+			, #{event_image}
+			, #{coupon_type_num}
+		)
+	</insert>
+	
+<!-- 이벤트 수정 -->
+	<update id="updateEvent">
+		UPDATE event
+		SET 
+			event_subject = #{event_subject}
+			, event_type_num = #{event_type_num}
+			, event_start_date = #{event_start_date}
+			, event_end_date = #{event_end_date}
+			, coupon_type_num = #{coupon_type_num}
+		WHERE
+			event_num = #{event_num}		
+	</update>
+	
+<!-- 이벤트 삭제 -->
+	<delete id="deleteEvent">
+		DELETE FROM event
+		WHERE event_num = #{event_num}
+	</delete>
+	
+<!-- 공지사항 입력 -->
+
+	<!-- 여기서부터 csc 관련 sql=========================================== -->
+	<insert id="insertNotice" >
+<!-- 		<selectKey keyProperty="notice_num" resultType="int" order="BEFORE"> -->
+<!-- 			SELECT IFNULL(MAX(notice_num), 0) FROM notice -->
+<!-- 		</selectKey> -->
+		
+	INSERT INTO notice (notice_num, notice_subject, notice_content, notice_date, notice_category, theater_num )
+	VALUES (
+			null,
+			#{notice.notice_subject},
+			#{notice.notice_content},
+			now(),
+			#{notice.notice_category},
+			CASE WHEN #{theater_num} = 0 then null ELSE #{theater_num} END
+			)
+		
+	</insert>
+	<!-- 공지 목록 가져오기 -->
+	<select id="selectNoticeList" resultType="itwillbs.p2c3.boogimovie.vo.NoticeVO">
+		SELECT n.notice_num
+			  ,n.notice_subject
+			  ,n.notice_content
+			  ,t.theater_name
+			  ,n.notice_date
+			  ,n.notice_category
+		FROM notice n
+		LEFT OUTER JOIN theater t 
+		ON n.theater_num = t.theater_num
+		ORDER BY notice_num DESC
+		LIMIT #{startRow}, #{listLimit}
+	</select>
+
+	<insert id="insertReply">
+		INSERT INTO oto_reply
+		VALUES (null,
+				#{reply.oto_reply_content},
+				now(),
+				#{oto_num} 
+		)
+	</insert>
+	<delete id="deleteNotice">
+		DELETE FROM notice
+		WHERE notice_num = #{notice_num}
+	</delete>
+	<select id="getNoticeListCount" resultType="int">
+		SELECT COUNT(notice_num) FROM notice
+	</select>
+	
+	<select id="selectNotice">
+		SELECT n.notice_num
+			 , n.notice_subject
+			 , n.notice_content
+			 , n.notice_date
+			 , n.notice_category
+			 , t.theater_name
+		  FROM notice n
+		  LEFT OUTER JOIN theater t
+		  ON n.theater_num = t.theater_num
+		  WHERE notice_num = #{notice_num}
+
+	</select>
+	<select id="selectMaxNotice" resultType="int">
+		SELECT MAX(notice_num)
+		FROM notice
+	</select>
+	<select id="selectMinNotice" resultType="int">
+		SELECT MIN(notice_num)
+		FROM notice
+	</select>
+	
+	<!-- ============================================= -->
+	<!-- 스토어 사항 입력 -->
+	<select id="selectItemListFull" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT *
+		FROM item_info
+		WHERE item_info_category IN ('콤보', '스낵', '음료', '팝콘')
+		ORDER BY item_info_category, item_info_price ASC
+	</select>	
+	
+	<select id="selectItem" resultType="itwillbs.p2c3.boogimovie.vo.ItemInfoVO">
+		SELECT * 
+		FROM item_info
+		WHERE item_info_name = #{item_info_name}
+	</select>	
+	
+	<insert id="insertItem">
+		INSERT INTO item_info(
+		item_info_name,
+		item_info_category,
+		item_info_image,
+		item_info_price		
+		)
+		VALUES (
+			#{item_info_name},
+			#{item_info_category},
+			#{item_info_image},
+			#{item_info_price}
+		)
+	</insert>
+	
+	<delete id="deleteItem">
+		DELETE FROM item_info
+		WHERE item_info_name = #{item_info_name}
+	</delete>
+	
+	<update id="updateItem">
+		UPDATE item_info
+		SET 
+			item_info_category = #{item_info_category}
+			, item_info_price = #{item_info_price}
+			, item_info_image = #{item_info_image}
+		WHERE
+			item_info_name = #{item_info_name}	
+	</update>
+	
+ 	<!-- 스토어 결제관리 -->
+ 	<select id="selectStorePay" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+ 		SELECT s.store_pay_num ,s.member_id ,s.store_pay_type ,s.store_pay_date ,s.store_pay_price ,s.store_pay_status, s.store_pay_cancel_date , s.use_point , ct.coupon_value 
+		FROM store_pay s
+		LEFT JOIN coupon c  
+		ON  c.coupon_num = s.coupon_num 
+		LEFT JOIN coupon_type ct 
+		ON c.coupon_type_num = ct.coupon_type_num
+		ORDER BY
+			store_pay_date desc
+		LIMIT 
+		#{startRow}
+		, #{listLimit}
+ 	</select>
+
+ 	<!-- 스토어 결제리스트 조회 -->
+ 	<select id="selectStorePayList" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+ 		SELECT s.store_pay_num ,s.member_id ,s.store_pay_type ,s.store_pay_date ,s.store_pay_price ,s.store_pay_status, s.store_pay_cancel_date , s.use_point , ct.coupon_value 
+		FROM store_pay s
+		LEFT JOIN coupon c  
+		ON  c.coupon_num = s.coupon_num 
+		LEFT JOIN coupon_type ct 
+		ON c.coupon_type_num = ct.coupon_type_num
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				s.member_id LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY
+			store_pay_date desc
+		LIMIT 
+		#{startRow}
+		, #{listLimit}
+ 	</select>
+
+ 	<!-- 스토어 결제 수 -->
+ 	<select id="getStorePayListCount">
+ 		SELECT count(s.store_pay_num) 
+		FROM store_pay s
+		LEFT JOIN coupon c  
+		ON  c.coupon_num = s.coupon_num 
+		LEFT JOIN coupon_type ct 
+		ON c.coupon_type_num = ct.coupon_type_num
+ 	</select>
+ 	
+ 	<select id="selectStorePayDetail" resultType="itwillbs.p2c3.boogimovie.vo.StorePayVO">
+ 		SELECT s.store_pay_num ,s.member_id ,s.store_pay_type ,s.store_pay_date ,s.store_pay_price ,s.store_pay_status, s.store_pay_cancel_date , s.use_point , ct.coupon_value 
+		FROM store_pay s
+		LEFT JOIN coupon c  
+		ON  c.coupon_num = s.coupon_num 
+		LEFT JOIN coupon_type ct 
+		ON c.coupon_type_num = ct.coupon_type_num
+		WHERE store_pay_num = #{store_pay_num}
+ 	</select>
+	
+	<select id="selectCart" resultType="itwillbs.p2c3.boogimovie.vo.CartVO">
+		SELECT item_info_name, item_quantity
+		FROM cart c 
+		JOIN item_info ii 
+		ON c.item_info_num  = ii.item_info_num
+		JOIN store_pay sp 
+		ON sp.cart_id  = c.cart_id 
+		WHERE store_pay_num = #{store_pay_num}
+	</select>
+	
+	<!-- 상영관 리스트 조회 -->
+	<select id="selectScreenInfo" resultType="itwillbs.p2c3.boogimovie.vo.ScreenInfoVO">
+		SELECT *, theater_name
+		FROM   screen_info
+		JOIN   theater
+		ON     screen_info.theater_num = theater.theater_num
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				theater_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+			LIMIT 
+			#{startRow}
+			, #{listLimit}
+	 </select>
+	 
+	<!-- 상영관 리스트 수 -->
+	<select id="selectScreenInfoCount" resultType="int">
+		SELECT count(*)
+		FROM   screen_info
+		JOIN   theater
+		ON     screen_info.theater_num = theater.theater_num
+		<if test="!searchKeyword.equals('')">
+			WHERE
+				theater_name LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	 </select>
+	
+</mapper>

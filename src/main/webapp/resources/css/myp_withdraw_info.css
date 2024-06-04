@@ -1,0 +1,57 @@
+@charset "EUC-KR";
+
+.container1{
+	height : 1300px;
+	width: 1400px; /* 해상도 1200*/
+	margin : auto;
+}
+.container2{
+	margin-top: 20px;
+}
+
+.box2{
+	height: 40%;
+}
+
+.text2{
+	margin-left: 30px;
+}
+
+/*------- 사이드바 ----------*/
+
+blockquote{
+  display:block;
+  background: #fff;
+  padding: 15px 20px 15px 45px;
+ 
+  /*Box Shadow - (Optional)*/
+  -moz-box-shadow: 2px 2px 15px #ccc;
+  -webkit-box-shadow: 2px 2px 15px #ccc;
+  box-shadow: 2px 2px 15px #ccc;
+ 
+  /*Borders - (Optional)*/
+  border-left-style: solid;
+  border-left-width: 15px;
+  border-right-style: solid;
+  border-right-width: 2px;
+}
+ 
+/*Blue Jeans Color Palette*/
+blockquote.bluejeans{
+  border-left-color: #5e9de6;
+  border-right-color: #4b8ad6;
+  margin-top: 20px;
+}
+
+/* --------------------  버튼  ----------------------*/
+.content {
+	padding: 2em 1em 5em;
+	z-index: 1;
+	max-width: 1000px;
+	margin: 0 auto;
+	display: flex; /* 가로로 정렬 */
+	flex-direction: row; /* 수평으로 배치 */
+	justify-content: center; /* 가운데 정렬 */
+	margin-top: 2em; /* 위쪽 여백 추가 */
+}
+

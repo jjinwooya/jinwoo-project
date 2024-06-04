@@ -1,0 +1,120 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+.notice_pageArea {
+    text-align: center;
+}
+
+.notice_pageArea nav {
+    display: inline-block;
+}
+
+csc_notice_title {
+	margin-left: 300px;
+}
+
+.csc_local {
+	display: inline-block;
+	border:solid 1px black;
+	margin-top:10px;
+	border-radius:3px;
+	background: #0066FF;
+	color:white;
+	cursor: pointer;
+	font-size:0.8em;
+	padding:5px;
+}
+
+.csc_search {
+	display: inline-block;
+	position: relative;
+	width: 300px;
+	float: right;
+	margin-top: 30px;
+	
+}
+
+.csc_search input[type="text"] {
+	width:230px;
+	border:solid 1px black;
+	
+}
+
+.searchIcon {
+	position: absolute;
+	top:3px;
+	left:210px;
+	
+}
+input::placeholder {
+	font-size: 0.8em;
+}
+
+table {
+	border-collapse: collapse;
+	width: 90%;
+	margin: 0rem auto;
+	box-shadow: 4px 4px 10px 0 rgba(0, 0, 0, 0.1);
+	background-color: white;
+	text-align: center;
+}
+
+/* 테이블 행 */
+th, td {
+	padding: 12px 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+th {
+	background-color: #1b1b1b;
+	color: #ddd;
+}
+
+/* 테이블 올렸을 때 */
+tbody tr:hover {
+	background-color: #eee;
+	opacity: 0.9;
+	cursor: pointer;
+}
+
+/* 테이블 비율 */
+th:nth-child(1),
+td:nth-child(1) {
+  width: 10%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+  width: 10%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+  width: 10%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+	width: 40%;
+}
+th:nth-child(5),
+td:nth-child(5) {
+	width: 30%;
+}
+
+span {
+	font-size:0.9em;
+}
+
+.col {
+	text-align:center;
+}
+
+.csc_searcher {
+	display: inline;
+}
+
+#csc_mainTitle {
+	margin-top: 20px;
+}
+
+
